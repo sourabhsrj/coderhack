@@ -1,6 +1,5 @@
 package com.example.coderhack.controller;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.coderhack.model.User;
@@ -8,9 +7,11 @@ import com.example.coderhack.services.UserService;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
@@ -20,33 +21,25 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable String userId) {
+    public User getUserById(@PathVariable String userId) {
         return userService.getUserById(userId)
-                          .map(ResponseEntity::ok)
-                          .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @PostMapping
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        if (user.getUserId() == null || user.getUsername() == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(userService.registerUser(user));
+    public User registerUser(@RequestBody  User user) {
+        return userService.registerUser(user);
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<User> updateUserScore(@PathVariable String userId, @RequestParam int score) {
-        try {
-            return ResponseEntity.ok(userService.updateUserScore(userId, score));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public User updateUserScore(@PathVariable String userId, @RequestBody  User user) {
+        return userService.updateUserScore(userId, user);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
+    public void deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
-        return ResponseEntity.noContent().build();
     }
 }
+
 

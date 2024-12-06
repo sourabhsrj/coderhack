@@ -1,26 +1,61 @@
 package com.example.coderhack.model;
 
-import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
-@Data
+
+
+import java.util.Set;
+
 @Document(collection = "users")
 public class User {
     @Id
-    private String userId; // Unique identifier
+    private String userId;
     private String username;
-    private int score = 0; // Default to 0
-    private Set<String> badges = new HashSet<>(); // Default to empty
+    private int score;
+    private List<String> badges;
 
-    public void updateBadges() {
-        badges.clear();
-        if (score >= 1 && score < 30) badges.add("Code Ninja");
-        if (score >= 30 && score < 60) badges.add("Code Champ");
-        if (score >= 60 && score <= 100) badges.add("Code Master");
+    public User(String username) {
+        this.userId = UUID.randomUUID().toString();
+        this.username = username;
+        this.score = 0;
+        this.badges = new ArrayList<>();
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public List<String> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(List<String> badges) {
+        Set<String> uniqueBadges = new HashSet<>(badges);
+        this.badges = new ArrayList<>(uniqueBadges);
     }
 }
+
+
 
